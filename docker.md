@@ -1311,6 +1311,22 @@ docker-compose down
   * 방문 횟수를 카운트하는 python 컨테이너 빌드와 운영 예제
   * [참고 : Get started with Docker Compose](https://docs.docker.com/compose/gettingstarted/)
 
+
+> docker-compose 실습
+* docker-compose 설치하기
+  * [참고 : Install Docker Compose](https://docs.docker.com/compose/install/)
+```
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+// after logout and login...
+docker-compose --version
+```
+
+* 컨테이너 빌드에서 운영까지
+  * 방문 횟수를 카운트하는 python 컨테이너 빌드와 운영 예제
+  * [참고 : Get started with Docker Compose](https://docs.docker.com/compose/gettingstarted/)
+
 ```
 // 1단계 : 서비스 디렉토리 생성, 필요한 파일 생성
  mkdir composetest
@@ -1375,11 +1391,6 @@ services:
 // 4단계 : docker-compose 명령어
 docker-compose up -d
 ```
-
-> docker-compose 실습
-* docker-compose 설치하기
-
-* 컨테이너 빌드에서 운영까지
 
 * mysql database를 사용하는 wordpress 운영하기
 
