@@ -1318,9 +1318,11 @@ cd composetest
 // 2단계 : 빌드를 위한 dockerfile 생성
 FROM python:3.7-alpine
 WORKDIR /code
+# Flask : micro web framework
 ENV FLASK_APP=app.py
 ENV FLASK_RUN_HOST=0.0.0.0
 RUN apk add --no-cache gcc musl-dev linux-headers
+# required libs, pip install libs
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 EXPOSE 5000
