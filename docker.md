@@ -1439,7 +1439,20 @@ docker-compose scale redis=3
 WARNING: The scale command is deprecated. Use the up command with the --scale flag instead.
 Stopping and removing composetest_redis_2 ... done
 Stopping and removing composetest_redis_3 ... done
+```
+   
+```
+// docker exec와 유사한 command. web 이라는 서비스에 env를 전달.
+docker-compose run web env
 
+// 서비스 중인 web의 log를 보고자 할때
+docker-compose logs web
+
+// 서비스 중지 only
+docker-compose stop
+
+// 완전히 종료하여 리소스 제거
+docker-compose down
 ```
 
 * mysql database를 사용하는 wordpress 운영하기
