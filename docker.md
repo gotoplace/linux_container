@@ -1396,9 +1396,9 @@ docker-compose up -d
 // docker-compose 추가 확인
 docker-compose ps
 docker-compose logs
-docker-compose port
+// docker-compose port
+docker-compose port web
 docker-compose config
-
 ```
 
 * mysql database를 사용하는 wordpress 운영하기
