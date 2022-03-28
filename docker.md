@@ -1405,6 +1405,27 @@ docker-compose port web 5000
 docker-compose config
 ```
 
+```
+// 중단 및 리소스 제거
+docker-compose down
+
+// 5단계 : docker-compose.yml - bind mount 추가
+version: "3.9"
+services:
+  web:
+    build: .
+    ports:
+      - "8000:5000"
+    volumes:
+      - .:/code
+    environment:
+      FLASK_ENV: development
+  redis:
+    image: "redis:alpine"
+
+// 
+```
+
 * mysql database를 사용하는 wordpress 운영하기
 
 
