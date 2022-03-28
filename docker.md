@@ -1507,6 +1507,11 @@ volumes:
 docker-compose up -d
 
 
+// host에 실제 저장되는 경로
+/var/lib/docker/volumes/my_wordpress_db_data/_data
+/var/lib/docker/volumes/my_wordpress_wordpress_data/_data
+
+
 // host의 brower로 8000 port로 접근
 
 
