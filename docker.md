@@ -1409,7 +1409,7 @@ docker-compose config
 // 중단 및 리소스 제거
 docker-compose down
 
-// 5단계 : docker-compose.yml - bind mount 추가
+// 5단계 : docker-compose.yml - bind mount 추가. 현재 디렉토리를 /code로 mount했기 때문에 app.py 파일을 수정하면 바로 적용됨.
 version: "3.9"
 services:
   web:
@@ -1423,7 +1423,8 @@ services:
   redis:
     image: "redis:alpine"
 
-// 
+// app.py 파일을 일부 수정 & 저장한 후 host의 brower에서 바로 확인
+'Hello Docker!!! I have been seen {} times.\n'.format(count)
 ```
 
 * mysql database를 사용하는 wordpress 운영하기
