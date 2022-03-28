@@ -1391,6 +1391,15 @@ services:
 // 4단계 : docker-compose 명령어
 docker-compose up -d
 ```
+   
+```
+// docker-compose 추가 확인
+docker-compose ps
+docker-compose logs
+docker-compose port
+docker-compose config
+
+```
 
 * mysql database를 사용하는 wordpress 운영하기
 
