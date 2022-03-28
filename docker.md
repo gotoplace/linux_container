@@ -1246,7 +1246,7 @@ volumes:
 mkdir webserver
 cd webserver
 
-// 2단계 : docker-compose.yaml 생성
+// 2단계 : docker-compose.yml 생성
 version: "3"
 services:
   web:
@@ -1294,7 +1294,7 @@ docker-compose config
 docker-compose up
 docker-compose up -d
 // 다른 디렉토리의 yaml 실행
-docker-compose -f /other-dir/docker-compose.yaml
+docker-compose -f /other-dir/docker-compose.yml
 
 docker-compose ps
 docker-compose scale 서비스이름=개수
@@ -1361,6 +1361,7 @@ def hello():
 flask
 redis
 
+
 // 2단계 : 빌드를 위한 dockerfile 생성
 # syntax=docker/dockerfile:1
 FROM python:3.7-alpine
@@ -1377,7 +1378,7 @@ COPY . .
 CMD ["flask", "run"]
 
 
-// 3단계 : docker-compose.yaml 생성
+// 3단계 : docker-compose.yml 생성
 version: "3.9"
 services:
   web:
