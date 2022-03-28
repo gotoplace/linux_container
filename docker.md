@@ -1451,8 +1451,8 @@ docker-compose logs web
 // 서비스 중지 only
 docker-compose stop
 
-// 완전히 종료하여 리소스 제거
-docker-compose down
+// 완전히 종료, network, volume까지 제거
+docker-compose down --volumes
 ```
 
 * mysql database를 사용하는 wordpress 운영하기
