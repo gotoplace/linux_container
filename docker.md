@@ -413,7 +413,7 @@ docker rm webserver [option] containername
 ----
 
 > 동작중인 컨테이너 process 상태 확인
-* 컨테이터 상태
+* 컨테이너 상태
 ```
 docker ps
 docker top webserver
