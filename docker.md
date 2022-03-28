@@ -1396,8 +1396,11 @@ docker-compose up -d
 // docker-compose 추가 확인
 docker-compose ps
 docker-compose logs
+
 // docker-compose port
-docker-compose port web
+docker-compose port web 5000
+0.0.0.0:8000
+
 docker-compose config
 ```
 
