@@ -1309,13 +1309,44 @@ docker-compose down
 > 빌드에서 운영까지
 * 빌드와 운영
   * 방문 횟수를 카운트하는 python 컨테이너 빌드와 운영 예제
+  * [참고 : Get started with Docker Compose](https://docs.docker.com/compose/gettingstarted/)
 
 ```
-// 1단계 : 서비스 디렉토리 생성
-mkdir composetest
-cd composetest
+// 1단계 : 서비스 디렉토리 생성, 필요한 파일 생성
+ mkdir composetest
+ cd composetest
+
+// app.py
+import time
+
+import redis
+from flask import Flask
+
+app = Flask(__name__)
+cache = redis.Redis(host='redis', port=6379)
+
+def get_hit_count():
+    retries = 5
+    while True:
+        try:
+            return cache.incr('hits')
+        except redis.exceptions.ConnectionError as exc:
+            if retries == 0:
+                raise exc
+            retries -= 1
+            time.sleep(0.5)
+
+@app.route('/')
+def hello():
+    count = get_hit_count()
+    return 'Hello World! I have been seen {} times.\n'.format(count)
+
+// requirements.txt
+flask
+redis
 
 // 2단계 : 빌드를 위한 dockerfile 생성
+# syntax=docker/dockerfile:1
 FROM python:3.7-alpine
 WORKDIR /code
 # Flask : micro web framework
@@ -1326,18 +1357,20 @@ RUN apk add --no-cache gcc musl-dev linux-headers
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 EXPOSE 5000
-COPY ..
+COPY . .
 CMD ["flask", "run"]
 
+
 // 3단계 : docker-compose.yaml 생성
-version: "3"
+version: "3.9"
 services:
   web:
     build: .
     ports:
-      - "5000:5000"
+      - "8000:5000"
   redis:
     image: "redis:alpine"
+
 
 // 4단계 : docker-compose 명령어
 docker-compose up -d
