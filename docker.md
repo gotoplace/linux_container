@@ -638,6 +638,12 @@ FROM debian
 MAINTAINER Chris Choe
 RUN apt-get update; apt-get install stress -y
 CMD ["/bin/sh", "-c", "stress -c 2"]
+
+// 빌드
+docker build -t stress .
+
+// 실행
+docker run -d --name c1 --cpus="1.0" stress:latest stress --cpu 1
 ```
 
 * 메모리 리소스 제한
