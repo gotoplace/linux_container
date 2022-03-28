@@ -1425,6 +1425,13 @@ services:
 
 // app.py 파일을 일부 수정 & 저장한 후 host의 brower에서 바로 확인
 'Hello Docker!!! I have been seen {} times.\n'.format(count)
+
+// 서비스 개수 증가
+docker-compose scale redis=3
+WARNING: The scale command is deprecated. Use the up command with the --scale flag instead.
+
+Creating composetest_redis_2 ... done
+Creating composetest_redis_3 ... done
 ```
 
 * mysql database를 사용하는 wordpress 운영하기
