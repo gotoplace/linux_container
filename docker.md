@@ -1461,6 +1461,61 @@ docker-compose down --volumes
 ```
 
 * mysql database를 사용하는 wordpress 운영하기
+  * [참고 : Quickstart: Compose and WordPress](https://docs.docker.com/samples/wordpress/)
 
+```
+// 디렉토리 생성 및 필요한 파일 생성
+mkdir my_wordpress
+cd my_wordpress
+
+
+// docker-compose.yml
+version: "3.9"
+    
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    volumes:
+      - wordpress_data:/var/www/html
+    ports:
+      - "8000:80"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+volumes:
+  db_data: {}
+  wordpress_data: {}
+
+
+// docker-compose 실행
+docker-compose up -d
+
+
+// host의 brower로 8000 port로 접근
+
+
+// shutdown and cleanup
+// removes the containers and default network, but preserves your WordPress database
+docker-compose down
+
+// removes the containers, default network, and the WordPress database.
+docker-compose down --volumes
+```
 
 *****
