@@ -1439,6 +1439,11 @@ docker-compose scale redis=3
 WARNING: The scale command is deprecated. Use the up command with the --scale flag instead.
 Stopping and removing composetest_redis_2 ... done
 Stopping and removing composetest_redis_3 ... done
+
+// WARNING: The scale command is deprecated. Use the up command with the --scale flag instead.
+// 아래 command로 변경하여 사용
+docker-compose up -d --scale redis=3
+docker-compose up -d --scale redis=1
 ```
    
 ```
