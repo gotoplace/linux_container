@@ -156,11 +156,11 @@ $ docker build -t imagename:tag .
 * ENTRYPOINT : CMD와 함께 사용하면서 command 지정 시 사용
 
 > docker image 배포
-* public hub, private hub 모두 배포 
+* public hub, private hub 모두 배포
 
 *****
 
-nodejs 기반 hellojs 컨테이너 
+실습 - nodejs 기반 hellojs 컨테이너
 -----
 
 > dockerfile 생성 및 실행 command
@@ -204,7 +204,7 @@ docker rm -f web
 
 *****
 
-우분투 기반의 웹 서버 컨테이너 만들기
+실습 - 우분투 기반의 웹 서버 컨테이너 만들기
 -----
 
 > dockerfile 생성 및 실행 command
