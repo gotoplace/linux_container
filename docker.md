@@ -1,6 +1,6 @@
 ## docker 강의 내용 정리 : [따배도 - 이성미 강사님](https://www.youtube.com/watch?v=NLUugLQ8unM&list=PLApuRlvrZKogb78kKq1wRvrjg1VMwYrvi)
 * Youtube 강의 내용을 개인적으로 정리한 내용이므로 오타 또는 오류가 있을 수 있습니다.
-* Youtube 강의 내용을 참고하여 직접 따라해보는 것을 추천합니다.
+* 아래 작성 내용에는 container에 대한 상세 설명이 포함되지 않았으므로, Youtube 강의 내용을 참고하여 직접 따라해보는 것을 추천합니다.
 
 
 docker 설치 (ubuntu, centos)
