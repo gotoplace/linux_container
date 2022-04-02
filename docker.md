@@ -1,7 +1,7 @@
 ## docker 강의 내용 정리 : [따배도 - 이성미 강사님](https://www.youtube.com/watch?v=NLUugLQ8unM&list=PLApuRlvrZKogb78kKq1wRvrjg1VMwYrvi)
 * Youtube 강의 내용을 개인적으로 정리한 내용이므로 오타 또는 오류가 있을 수 있습니다.
 * 아래 작성 내용에는 container에 대한 상세 설명이 포함되지 않았으므로, Youtube 강의 내용을 참고하여 직접 따라해보는 것을 추천합니다.
-
+* 아래 // 주석으로 표시한 설명은 dockerfile이나 작성 파일 내용에는 포함되지 않아야 합니다.
 
 docker 설치 (ubuntu, centos)
 -----
@@ -67,7 +67,7 @@ docker commands
   * image 저장 경로 : /var/lib/docker/overlay2
   * 동영상에서는 latest 붙이지 않았으며 레이어는 5개라고 설명되었지만, 2022.03.24 기준으로 레이어는 6개로 확인됨
 ```
-// 일반 계정으로 실행
+// 일반 계정으로 실행 권장
 $ docker pull nginx
 ```
 
@@ -78,30 +78,39 @@ $ docker pull nginx
 > image 실행
 * docker run -d --name web -p 80:80 nginx:latest
   * 동영상에서 실행시 "docker run --name web -d -p 80:80 nginx" 사용
+  * 일반 계정으로 실행 권장, 실행 후 container ID가 보임
 ```
-// 일반 계정으로 실행
 $ docker run -d --name web -p 80:80 nginx
-// 실행하면 container ID가 보임
+
 f91dcbf92b53ede8dcadfb49c4dcd0aaddee1f6a983454fba775ce13aa195d7a
-
-// 아래와 같이 실행하면 html 파일 내용을 보여줘야 함
+```
+  * 아래와 같이 실행하면 html 파일 내용을 보여줘야 함
+```
 $ curl localhost:80
-
 ```
 
-> 실행 중인 container 확인
-* docker ps
-
-> container 실행 중단
-* docker stop containername
-
-> container 삭제 (engine에서만 내리는 것)
-* docker rm containername
-
-> container image 삭제
-* docker rmi containername
-  * docker rm image containername 동작 안함
-  * 삭제 되었는지 /var/lib/docker/overlay2 확인해 볼 것
+> 실행 중인 container 관리
+* 실행 중인 container 확인
+```
+$ docker ps
+```
+   
+* container 실행 중단
+```
+$ docker stop containername
+```
+   
+* container 삭제 (engine에서만 내리는 것)
+```
+$ docker rm containername
+```
+   
+* container image 삭제
+```
+$ docker rmi containername
+```
+* docker rm image containername 동작 안함
+* 삭제 되었는지 /var/lib/docker/overlay2 확인해 볼 것
 
 *****
 
