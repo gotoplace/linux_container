@@ -83,9 +83,8 @@ $ docker pull nginx
 $ docker run -d --name web -p 80:80 nginx
 
 f91dcbf92b53ede8dcadfb49c4dcd0aaddee1f6a983454fba775ce13aa195d7a
-```
-  * 아래와 같이 실행하면 html 파일 내용을 보여줘야 함
-```
+
+// 아래와 같이 실행하면 html 파일 내용을 보여줘야 함
 $ curl localhost:80
 ```
 
@@ -136,6 +135,7 @@ var handler = function(request, response) {
 var www = http.createServer(handler);
 www.listen(8080);
 ```
+* docker image 생성
 ```
 $ mkdir build
 $ cd build
@@ -165,7 +165,7 @@ $ docker build -t imagename:tag .
 * ENTRYPOINT : CMD와 함께 사용하면서 command 지정 시 사용
 
 > docker image 배포
-* public hub, private hub 모두 배포
+* public hub, private hub 모두 배포 가능
 
 *****
 
@@ -173,42 +173,44 @@ $ docker build -t imagename:tag .
 -----
 
 > dockerfile 생성 및 실행 command
-* dockerfile 내용
+* dockerfile 내용 : hello_js라는 디렉토리를 하나 생성하고 진행
 ```
 $ vi dockerfile
+```
+```
 FROM node:12
 COPY hello.js /
 CMD ["node", "/hello.js"]
 ```
 
 * 컨테이너 생성 command
+  * base가되는 node:12를 받아오고
+  * hello.js를 이미지에 포함한다.
+  * latest는 안 붙여도 자동으로 latest가 된다.
 ```
-// base가되는 node:12를 받아오고
-// hello.js를 이미지에 포함한다.
-// latest는 안 붙여도 자동으로 latest가 된다.
 $ docker build -t hellojs:latest .
 ```
 
 * 컨테이너 실행
+  * latest tag는 붙이지 않아도 되지만, latest가 아닌 tag는 필히 붙여야 한다.
 ```
-// latest tag는 붙이지 않아도 되지만, latest가 아닌 tag는 필히 붙여야 한다.
-docker run -d -p 8080:8080 --name web hellojs
+$ docker run -d -p 8080:8080 --name web hellojs
 ```
 
 * 서비스 동작 여부 확인
 ```
-docker ps
+$ docker ps
 
 CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                       NAMES
 74c9047cb909   hellojs   "docker-entrypoint.s…"   3 seconds ago   Up 3 seconds   0.0.0.0:8080->8080/tcp, :::8080->8080/tcp   web
 
-curl localhost:8080                                                                            ─╯
+$ curl localhost:8080
 Container Hostname: 74c9047cb909
 ```
 
 * 컨테이너 삭제
 ```
-docker rm -f web
+$ docker rm -f web
 ```
 
 *****
@@ -231,24 +233,31 @@ CMD ["/usr/sbin/apache2ctl", "-DFOREGROUND"]
 
 * 컨테이너 생성 command
 ```
-docker build -t webserver:v1 .
+$ docker build -t webserver:v1 .
 ```
 
 * 컨테이너 실행
+  * latest tag는 붙이지 않아도 되지만, latest가 아닌 tag는 필히 붙여야 한다.
 ```
-// latest tag는 붙이지 않아도 되지만, latest가 아닌 tag는 필히 붙여야 한다.
-docker run -d -p 80:80 --name web webserver:v1
+$ docker run -d -p 80:80 --name web webserver:v1
 ```
 
 * 서비스 동작 여부 확인
 ```
-docker ps
+$ docker ps
+```
 
-// 현재 게스트 OS가 아닌 다른 게스트 OS에서 접근 하는 예제
-curl vm-ubuntu-s:80
+* localhost에서 접근 하는 예제
+```
+$ curl localhost:80
 
-// 또는 localhost
-curl localhost:80
+// 결과
+TEST WEB
+```
+
+* 현재 게스트 OS가 아닌 다른 게스트 OS에서 접근 하는 예제
+```
+$ curl vm-ubuntu-s:80
 
 // 결과
 TEST WEB
@@ -256,7 +265,7 @@ TEST WEB
 
 * 컨테이너 삭제
 ```
-docker rm -f web
+$ docker rm -f web
 ```
 
 *****
@@ -272,10 +281,10 @@ docker rm -f web
 * docker images로 확인
 * tag 붙이기
 ```
-docker tag webserver:v1 flatsixna/webserver:v1
-docker tag hellojs:latest flatsixna/hellojs:latest
+$ docker tag webserver:v1 flatsixna/webserver:v1
+$ docker tag hellojs:latest flatsixna/hellojs:latest
 
-docker images
+$ docker images
 
 // IMAGE ID가 같으므로 이미지는 동일하다
 REPOSITORY            TAG       IMAGE ID       CREATED             SIZE
@@ -290,9 +299,9 @@ ubuntu                18.04     b67d6ac264e4   6 days ago          63.2MB
 * push 하기
   * [repositories](https://hub.docker.com/repositories) 에서 확인 가능
 ```
-docker push flatsixna/webserver:v1
+$ docker push flatsixna/webserver:v1
 // latest 생략 가능
-docker push flatsixna/hellojs
+$ docker push flatsixna/hellojs
 ```
 
 *****
@@ -309,10 +318,10 @@ docker push flatsixna/hellojs
 * private registry
   * 사내에서 private하게 운영할 수 있는 registry
   * [docker registry 받아서 실행하면 private registry 사용 가능](https://hub.docker.com/_/registry)
-```
-// 사용 예제, private registry를 운영할 수 있음
-$ docker run -d -p 5000:5000 --restart always --name registry registry:2
 
+* 사용 예제, localhost에서 private registry를 운영할 수 있음
+```
+$ docker run -d -p 5000:5000 --restart always --name registry registry:2
 $ docker pull ubuntu
 $ docker tag ubuntu localhost:5000/ubuntu
 $ docker push localhost:5000/ubuntu
@@ -320,23 +329,24 @@ $ docker push localhost:5000/ubuntu
 
 > public registry에서 받고 계정에 연결된 registry에 업로드
 * 아래 순서로 진행
+  *  flatsixna는 개인 계정이므로 각자 생성한 계정을 사용한다.
 ```
-docker login
-docker pull httpd:latest
-docker tag httpd:latest flatsixna/httpd:latest
-docker push flatsixna/httpd:latest
+$ docker login
+$ docker pull httpd:latest
+$ docker tag httpd:latest flatsixna/httpd:latest
+$ docker push flatsixna/httpd:latest
 // hub.docker.com에서 확인
 ```
 
 > private registry 운영
 * 아래 순서로 진행
+  * registry 이미지가 없으면 자동으로 다운 받고 실행
 ```
-// 이미지 없으면 자동으로 다운 받고 실행
-docker run -d -p 5000:5000 --restart always --name registry registry:2
+$ docker run -d -p 5000:5000 --restart always --name registry registry:2
 
 // private registry에 올릴 때 이름이 중요, localhost 또는 domain, IP address가 될 수 있음
-docker tag httpd:latest localhost:5000/httpd:latest
-docker push localhost:5000/httpd:latest
+$ docker tag httpd:latest localhost:5000/httpd:latest
+$ docker push localhost:5000/httpd:latest
 
 // 아래 경로에 registry가 운영되고있고, 하위 디렉토리에 업로드 됨.
 /var/lib/docker/volumes/6ef9e49da167930d2dd2611a0309e703781c4b7cc2268d8839c2f2cad12c91be/_data/docker/registry/v2/repositories/httpd
@@ -353,27 +363,27 @@ docker push localhost:5000/httpd:latest
 > 컨테이너 이미지 사용 방법
 * 이미지 검색
 ```
-docker search [option] <imagename:tag>
+$ docker search [option] <imagename:tag>
 ```
 
 * 이미지 다운로드
 ```
-docker pull [option] <imagename:tag>
+$ docker pull [option] <imagename:tag>
 ```
 
 * 다운 받은 이미지 목록
 ```
-docker images
+$ docker images
 ```
 
 * 다운 받은 이미지 상세보기
 ```
-docker inspect [option] <imagename:tag>
+$ docker inspect [option] <imagename:tag>
 ```
 
 * 이미지 삭제
 ```
-docker rmi [option] <imagename:tag>
+$ docker rmi [option] <imagename:tag>
 ```
 *****
 
@@ -381,40 +391,40 @@ docker rmi [option] <imagename:tag>
 -----
 > 컨테이너 생성, 실행, 종료
 * 컨테이너 생성
+  * running 중 상태는 아님 : nginx이미지를 webserver라는 이름의 컨테이너를 생성
 ```
-// running 중 상태는 아님
-docker create --name webserver nginx:1.14
+$ docker create --name webserver nginx:1.14
 ```
 * 컨테이너 실행
+  * 생성할 때 지정한 이름
 ```
-// 생성할 때 지정한 이름
-docker start webserver
+$ docker start webserver
 ```
 
 * 컨테이너 생성과 실행
+  * pull -> create -> start 포함한 command
 ```
-// pull -> create -> start 포함한 command
-docker run --name webserver -d nginx:1.14
+$ docker run --name webserver -d nginx:1.14
 ```
 
 * 컨테이너 실행 상태 확인
 ```
-docker ps
+$ docker ps
 ```
 
 * 컨테이너 실행 상태 상세 확인
 ```
-docker inspect webserver
+$ docker inspect webserver
 ```
 
 * 컨테이너 종료
 ```
-docker stop webserver
+$ docker stop webserver
 ```
 
 * 컨테이너 삭제
 ```
-docker rm webserver [option] containername
+$ docker rm webserver [option] containername
 ```
 *****
 
@@ -423,16 +433,19 @@ docker rm webserver [option] containername
 
 > 동작중인 컨테이너 process 상태 확인
 * 컨테이너 상태
+  * 실행 중인 webser 컨테이너의 상태 확인
 ```
-docker ps
-docker top webserver
-docker logs webserver
+$ docker ps
+$ docker top webserver
+$ docker logs webserver
 ```
+
 * foreground 실행 중인 컨테이너에 연결
 ```
 docker attach [option] containername
 ```
 * 컨테이너에 추가 실행
+  * webserver 컨테이너에 bash process 실행하여 접근
 ```
 docker exec webserver /bin/bash
 ```
@@ -444,56 +457,54 @@ docker exec webserver /bin/bash
 
 > 검색 및 다운로드, 실행, 확인, 종료
 * 검색
+  * 보안 측면에서 official image만 다운로드 받을 것
 ```
-// 보안 측면에서 official image만 다운로드 받을 것
-docker search nginx
+$ docker search nginx
 ```
 * 다운로드
 ```
-// tag 지정시
-docker pull nginx:1.14
+$ docker pull nginx:1.14
 
-// latest
-docker pull mysql
-// latest IMAGE ID와 같다면 추가로 받지 않는다.
-docker pull mysql:8
+$ docker pull mysql
+// latest IMAGE ID와 같다면 추가로 다운로드 받지 않는다.
+$ docker pull mysql:8
 ```
 
 * 리스트 확인
+  * IMAGE ID full name 표시
 ```
-// IMAGE ID full name 표시
-docker images --no-trunc
+$ docker images --no-trunc
 ```
 
 * 실행
+  * create는 기본적으로 bg로 시작함, status : created
 ```
-// create는 기본적으로 bg로 시작함, status : created
-docker create --name webserver nginx:1.14
+$ docker create --name webserver nginx:1.14
 
 // status : UP ...
-docker start webserver
+$ docker start webserver
 ```
 
 * 컨테이너 확인
+  * 할당 받은 IP address와 같은 정보 확인 가능
 ```
-docker inspect webserver
+$ docker inspect webserver
 
-// 할당 받은 IP address와 같은 정보 확인 가능
 ...
                     "Gateway": "172.17.0.1",
                     "IPAddress": "172.17.0.3",
 
 // 일부만 확인하고자 할 때, 자주사용하므로 alias로 등록해서 사용하자.
-docker inspect --format '{{.NetworkSettings.IPAddress}}' webserver
+$ docker inspect --format '{{.NetworkSettings.IPAddress}}' webserver
 
 // html 확인
-curl 172.17.0.3
+$ curl 172.17.0.3
 
 // log 확인
-docker logs webserver
+$ docker logs webserver
 
 // process 상태 확인
-docker top webserver
+$ docker top webserver
 ```
 
 * 컨테이너에 shell하나 실행하여 접근
@@ -501,7 +512,7 @@ docker top webserver
 // 현재 실행 중인 webserver container에는 nginx daemon밖에 없음, 오픈되어있는 shell이 없으므로 하나 실행
 // 이 후, 내부에 존재하는 파일 접근 및 수정 가능
 // -it : interactive, terminal의 약자
-docker exec -it webserver /bin/bash
+$ docker exec -it webserver /bin/bash
 
 // shell prompt가 하나 뜸
 root@c8dcf2a668ab:/#
@@ -511,41 +522,40 @@ root@c8dcf2a668ab:/# echo "This page has been modified by chris." > index.html
 root@c8dcf2a668ab:/# exit
 
 // 변경 파일 확인
-curl 172.17.0.3
+$ curl 172.17.0.3
 This page has been modified by chris.
 
 ```
 
 * 종료
 ```
-docker stop webserver
+$ docker stop webserver
 ```
 
 * 컨테이너 삭제
 ```
 // 컨테이너 삭제시, 변경된 파일도 모두 사라지므로, 삭제는 신중하게 해야 함
-docker rm webserver
+$ docker rm webserver
 
 // 동작 중인 컨테이너 강제로 삭제
-docker rm -f webserver
+$ docker rm -f webserver
 
 // alias 등록하면 편리함
-alias dkrm='docker rm -f $(docker ps -aq)'
+$ alias dkrm='docker rm -f $(docker ps -aq)'
 ```
 
 > 컨테이너 실행 실습 (apache 서버)
 ```
-docker search httpd
-docker pull httpd
-// docker create httpd
+$ docker search httpd
+$ docker pull httpd
 
-docker run --name web -d httpd
-docker inspect web
-docker inspect --format '{{.NetworkSettings.IPAddress}}' web
+$ docker run --name web -d httpd
+$ docker inspect web
+$ docker inspect --format '{{.NetworkSettings.IPAddress}}' web
 
-curl 172.17.0.3
-docker logs web
-docker top web
+$ curl 172.17.0.3
+$ docker logs web
+$ docker top web
 ```
 
 *****
@@ -565,18 +575,24 @@ docker top web
 --memory-reservation | --memory 값보다 적은 값으로 구성하는 소프트 제한 값 설정
 --oom-kill-disable | OOM Killer가 프로세스 kill하지 못 하도록 보호
 
+* 예제 : 512MB까지 사용가능, over되면 스스로 kill됨
 ```
-// 512MB까지 사용가능, over되면 스스로 kill됨
-docker run -d -m 512m nginx:1.14
+$ docker run -d -m 512m nginx:1.14
+```
 
-// 최대 1GB, 500MB는 항상 보장 받음
-docker run -d -m 1g --memory-reservation 500m nginx:1.14
+* 예제 : 최대 1GB, 500MB는 항상 보장 받음
+```
+$ docker run -d -m 1g --memory-reservation 500m nginx:1.14
+```
 
-// 200MB까지 사용가능, swap은 300MB에 200MB가 포함된 의미이므로, 100MB만 추가로 사용가능함
-docker run -d -m 200m --memory-swap 300m nginx:1.14
+* 예제 : 200MB까지 사용가능, swap은 300MB에 200MB가 포함된 의미이므로, 100MB만 추가로 사용가능함
+```
+$ docker run -d -m 200m --memory-swap 300m nginx:1.14
+```
 
-// 커널이 out of memory killer 동작시 kill하지 못 하도록 설정
-docker run -d -m 200m --oom-kill-disable nginx:1.14
+* 커널이 out of memory killer 동작시 kill하지 못 하도록 설정
+```
+$ docker run -d -m 200m --oom-kill-disable nginx:1.14
 ```
 
 * CPU 리소스 제한
@@ -587,15 +603,19 @@ docker run -d -m 200m --oom-kill-disable nginx:1.14
 --cpuset-cpus | 컨테이너가 사용할 수 있는 CPU나 core를 할당.</br>cpu index는 0부터. --cpuset-cpus=0-4
 --cpu-share | 컨테이너가 사용하는 CPU 비중을 1024 값을 기반으로 설정.</br>--cpu-share 2048 기본 값 보다 두 배 많은 CPU 자원 할당
 
+* 예제 : CPU core 1개의 50%만 사용 가능
 ```
-// CPU core 1개의 50%만 사용 가능
-docker run -d --cpus=".5" ubuntu:18.04
+$ docker run -d --cpus=".5" ubuntu:18.04
+```
 
-// 범위 설정
-docker run -d --cpuset-cpus 0-3 ubuntu:18.04
+* 예제 : CPU core 범위 설정
+```
+$ docker run -d --cpuset-cpus 0-3 ubuntu:18.04
+```
 
-// 상대적인 비중을 설정, default로 1024인데 2048로 하면 다른 container보다 많은 비중으로 점유 가능
-docker run -d --cpu-share 2048 ubuntu:18.04
+* 예제 : 상대적인 비중을 설정, default로 1024인데 2048로 하면 다른 container보다 많은 비중으로 점유 가능
+```
+$ docker run -d --cpu-share 2048 ubuntu:18.04
 ```
 
 * Block IO 제한
@@ -608,19 +628,23 @@ docker run -d --cpu-share 2048 ubuntu:18.04
 
   * [참고 : [Docker] Resource : Block I/O 제한하기](https://m.blog.naver.com/alice_k106/220899310289)
 
+
+* 예제 : 상대적 가중치, 다른 blkio보다 적게 할당하려할 때
 ```
-// 상대적 가중치, 다른 blkio보다 적게 할당하겠다는 의미
 // --rm : 1회성으로 실행할 때 사용됨, 컨테이너가 종료될 때 컨테이너와 관련된 리소스(파일 시스템, 볼륨)까지 깨끗이 제거해줌
-docker run -it --rm --blkio-weight 100 ubuntu:latest /bin/bash
+$ docker run -it --rm --blkio-weight 100 ubuntu:latest /bin/bash
+```
 
-// 초당 1MByte 쓰기 제한
+* 예제 : 초당 1MByte 쓰기 제한
+```
 docker run -it --rm --device-write-bps /dev/vda:1mb ubuntu:lateat /bin/bash
-
 docker run -it --rm --device-write-bps /dev/vda:10mb ubuntu:lateat /bin/bash
+```
 
-// 쓰기 속도, 
-docker run -it --rm --device-write-iops /dev/vda:10 ubuntu:lateat /bin/bash
-docker run -it --rm --device-write-iops /dev/vda:100 ubuntu:lateat /bin/bash
+* 예제 : 쓰기 속도 지정
+```
+$ docker run -it --rm --device-write-iops /dev/vda:10 ubuntu:lateat /bin/bash
+$ docker run -it --rm --device-write-iops /dev/vda:100 ubuntu:lateat /bin/bash
 ```
 
 > 컨테이너 사용 리소스를 확인하는 모니터링 툴
@@ -640,19 +664,18 @@ docker run -it --rm --device-write-iops /dev/vda:100 ubuntu:lateat /bin/bash
     * **stress --cpu 2**
   * 메모리 부하 테스트 : 프로세스 수 2개와 사용할 메모리만큼 부하 발생
     * **stress --vm 2 --vm-bytes <사용할 크기>**
+  * dockerfile 작성
 ```
-vi dockerfile
 FROM debian
 # <id@email.com> maybe added if this field is required
 MAINTAINER Chris Choe
 RUN apt-get update; apt-get install stress -y
 CMD ["/bin/sh", "-c", "stress -c 2"]
-
-// 빌드
-docker build -t stress .
-
-// 실행
-docker run -d --name c1 --cpus="1.0" stress:latest stress --cpu 1
+```
+* 빌드 및 실행
+```
+$ docker build -t stress .
+$ docker run -d --name c1 --cpus="1.0" stress:latest stress --cpu 1
 ```
 
 * 메모리 리소스 제한
@@ -660,10 +683,10 @@ docker run -d --name c1 --cpus="1.0" stress:latest stress --cpu 1
 // swap 메모리 용량 제한이 실제 메모리 제한과 어떤 관련성이 있는지 확인해 본다.
 
 // MAX 100MBytes, swap 100M이면 실제 swap 사용 불가하다는 의미, 90M 로드를 발생 시킴
-docker run -m 100m --memory-swap 100m stress:latest stress --vm 1 --vm-bytes 90m -t 5s
+$ docker run -m 100m --memory-swap 100m stress:latest stress --vm 1 --vm-bytes 90m -t 5s
 
 // swap 100M이므로 150M는 실행 불가, 실행되면서 바로 kill됨
-docker run -m 100m --memory-swap 100m stress:latest stress --vm 1 --vm-bytes 150m -t 5s
+$ docker run -m 100m --memory-swap 100m stress:latest stress --vm 1 --vm-bytes 150m -t 5s
 
 stress: info: [1] dispatching hogs: 0 cpu, 0 io, 1 vm, 0 hdd
 stress: FAIL: [1] (415) <-- worker 8 got signal 9
@@ -672,11 +695,12 @@ stress: FAIL: [1] (421) kill error: No such process
 stress: FAIL: [1] (451) failed run completed in 0s
 
 // swap 사이즈 생략하면, default로 메모리 * 2, 실행 가능
-docker run -m 100m stress:latest stress --vm 1 --vm-bytes 150m -t 5s
+$ docker run -m 100m stress:latest stress --vm 1 --vm-bytes 150m -t 5s
 ```
+
+* OOM-Killer로부터 보호
 ```
-// 컨테이너를 OOM-Killer로부터 보호한다.
-docker run -d -m 100M --name m4 --oom-kill-disable=true nginx
+$ docker run -d -m 100M --name m4 --oom-kill-disable=true nginx
 
 // 확인 방법 1 : inspect로 확인
 docker inspect m4
@@ -687,7 +711,7 @@ docker inspect m4
 "OomKillDisable": true,
 
 // 확인 방법 2 : 아래 경로에서 확인, 리소스 제한은 cgroup에서 걸어 줌
-docker ps -a
+$ docker ps -a
 459314c8f74c   nginx     "/docker-entrypoint.…"   4 minutes ago   Up 4 minutes   80/tcp    m4
 
 cat /sys/fs/cgroup/memory/docker/459314c8f74cec662e769f2afc9ea28fd37e2f4a077fbc358ceef681abd5f4d9/memory.oom_control
@@ -700,31 +724,31 @@ oom_kill 0
 ```
 // CPU 개수를 제한하여 컨테이너를 실행한다.
 // CPU #1
-docker run --cpuset-cpus 1 --name c1 -d stress:latest stress --cpu 1
-htop -d 10 으로 확인
+$ docker run --cpuset-cpus 1 --name c1 -d stress:latest stress --cpu 1
+// htop -d 10 으로 확인
 
-docker run --cpuset-cpus 0-1 --name c2 -d stress:latest stress --cpu 1
-htop -d 10 으로 확인
+$ docker run --cpuset-cpus 0-1 --name c2 -d stress:latest stress --cpu 1
+// htop -d 10 으로 확인
 
-docker rm c1
+$ docker rm c1
 
 // 컨테이너별로 CPU 상대적 가중치를 할당하여 실행되도록 구성한다.
 // 컨테이너 모두 제거 후에 실행
-docker run -c 2048 --name cload1 -d stress:latest
-docker run --name cload2 -d stress:latest
-docker run -c 512 --name cload3 -d stress:latest
-docker run -c 512 --name cload4 -d stress:latest
+$ docker run -c 2048 --name cload1 -d stress:latest
+$ docker run --name cload2 -d stress:latest
+$ docker run -c 512 --name cload3 -d stress:latest
+$ docker run -c 512 --name cload4 -d stress:latest
 
 // 컨테이너 리소스 사용량 모니터링
-docker stats cload1 cload2 cload3 cload4
+$ docker stats cload1 cload2 cload3 cload4
 ```
 
 * Block IO 제한
 ```
 // 컨테이너에서 --device-write-iops를 적용해서 write속도의 초당 quota를 제한해서 IO write를 제한한다.
 // /dev/sda : lsblk로 확인
-docker run -it --rm --device-write-iops /dev/sda:10 ubuntu:latest /bin/bash
-dd if=/dev/zero of=file1 bs=1M count=10 oflag=direct
+$ docker run -it --rm --device-write-iops /dev/sda:10 ubuntu:latest /bin/bash
+$ dd if=/dev/zero of=file1 bs=1M count=10 oflag=direct
 
 10+0 records in
 10+0 records out
@@ -735,7 +759,7 @@ dd if=/dev/zero of=file1 bs=1M count=10 oflag=direct
 10485760 bytes (10 MB, 10 MiB) copied, 1.80358 s, 5.8 MB/s
 
 // 다음 write quota를 100으로 변경 후 같은 작업을 반복한다.
-docker run -it --rm --device-write-iops /dev/sda:100 ubuntu:latest /bin/bash
+$ docker run -it --rm --device-write-iops /dev/sda:100 ubuntu:latest /bin/bash
 dd if=/dev/zero of=file1 bs=1M count=10 oflag=direct
 
 10+0 records in
@@ -747,8 +771,7 @@ dd if=/dev/zero of=file1 bs=1M count=10 oflag=direct
 10485760 bytes (10 MB, 10 MiB) copied, 0.10667 s, 98.3 MB/s
 
 // bg로 memory까지 설정
-docker run -it --rm --device-write-iops /dev/sda:100 -m 500m --name c1 -d ubuntu:latest /bin/bash
-
+$ docker run -it --rm --device-write-iops /dev/sda:100 -m 500m --name c1 -d ubuntu:latest /bin/bash
 ```
 
 * cAdvisor : [cAdvisor link](https://github.com/google/cadvisor), 쿠버네티스에 포함됨
@@ -765,10 +788,10 @@ docker run -it --rm --device-write-iops /dev/sda:100 -m 500m --name c1 -d ubuntu
   * 할당 CPU core 수 : 1
 ```
 // 실행시 error 발생, docker stats로 확인하면 이미 종료된 상태
-docker run -e MYSQL_ROOT_PASSWORD=pass -p 3306:3306 -m 200m --memory-swap 300m --cpuset-cpus 1 --name db -d mysql:latest
+$ docker run -e MYSQL_ROOT_PASSWORD=pass -p 3306:3306 -m 200m --memory-swap 300m --cpuset-cpus 1 --name db -d mysql:latest
 
 // swap을 2배로 늘리면 정상 동작함
-docker run -e MYSQL_ROOT_PASSWORD=pass -p 3306:3306 -m 200m --memory-swap 400m --cpuset-cpus 1 --name db -d mysql:latest
+$ docker run -e MYSQL_ROOT_PASSWORD=pass -p 3306:3306 -m 200m --memory-swap 400m --cpuset-cpus 1 --name db -d mysql:latest
 ```
 * db 컨테이너 리소스 사용량을 docker stats 명령을 확인하기
 ```
@@ -796,7 +819,7 @@ CONTAINER ID   NAME      CPU %     MEM USAGE / LIMIT   MEM %     NET I/O     BLO
 * -v /path:/var/lib/xxx 와 같은 형태의 옵션 필요
 ```
 // mysql db를 host의 특정 경로에 volume mount하여 보존하는 예제. host의 /dbdata는 자동 생성되거나 기존 경로 사용
-docker run -d --name db -v /dbdata:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=pass mysql:latest
+$ docker run -d --name db -v /dbdata:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=pass mysql:latest
 ```
 * volume 옵션
 ```
@@ -805,38 +828,38 @@ docker run -d --name db -v /dbdata:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=pass my
 -v <container mount path>
 
 // 기본적으로 rw mode로 mount됨. 보안 측면에서 꼭 필요한 경우가 아니라면 ro mode를 사용하는 것이 안전함.
-docker run -d --name db -v /dbdata:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=pass mysql:latest
+$ docker run -d --name db -v /dbdata:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=pass mysql:latest
 
 // ro mode를 사용
-docker run -d -v /webdata:/var/www/html:ro httpd:latest
+$ docker run -d -v /webdata:/var/www/html:ro httpd:latest
 
 // container path만 걸어주면, 자동으로 /var/lib/docker/volumes/uuid/ 하위에 data directory 영구적으로 생성
-docker run -d -v /var/lib/mysql -e MYSQL_ROOT_PASSWORD=pass mysql:latest
-
+$ docker run -d -v /var/lib/mysql -e MYSQL_ROOT_PASSWORD=pass mysql:latest
 ```
 
 > 컨테이너끼리 데이터 공유하기
 * host의 특정 경로를 공유
 ```
 // host의 /webdata에 파일을 저장
-docker run -v /webdata:/webdata -d --name df smlinux/df:latest
+$ docker run -v /webdata:/webdata -d --name df smlinux/df:latest
 
 // df에서 저장한 파일을 nginx에서 ro로 접근 가능
-docker run -d -v /webdata:/usr/share/nginx/html:ro -d ubuntu:latest
+$ docker run -d -v /webdata:/usr/share/nginx/html:ro -d ubuntu:latest
 ```
 
 > 컨테이너 storage 실습
 * Mysql DB data 영구 보존하기 - host 경로 지정
 ```
 // 컨테이너 실행
-docker run -d --name db -v /dbdata:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=pass mysql:latest
+$ docker run -d --name db -v /dbdata:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=pass mysql:latest
 
 // 컨테이너 내부에 shell하나 오픈
-docker exec -it db /bin/bash
+$ docker exec -it db /bin/bash
 
 // mysql 접속
-mysql -u root -ppass
-
+$ mysql -u root -ppass
+```
+```
 // db 보기
 show databases;
 
@@ -845,23 +868,25 @@ create database chris;
 
 // 종료
 exit
-
+```
+```
 // host에서 확인
-ls -alh /dbdata
+$ ls -alh /dbdata
 drwxr-x---  2 systemd-coredump systemd-coredump 4.0K Mar 27 00:17  chris
 
 // 컨테이너 삭제 후, host에서 재확인
-docker rm -f db
+$ docker rm -f db
+$ ls -alh /dbdata
 ```
 
 * Mysql DB data 영구 보존하기 - host 경로 미지정
 ```
 // host 경로 미지정하여 실행
-docker run -d --name db -v /var/lib/mysql -e MYSQL_ROOT_PASSWORD=pass mysql:latest
+$ docker run -d --name db -v /var/lib/mysql -e MYSQL_ROOT_PASSWORD=pass mysql:latest
 
 // 상세 정보 확인, Source, Destination
 // Source 경로에 이동하여 확인해보면, mysql db 파일들 저장되어 있음
-docker inspect db
+$ docker inspect db
 
         "Mounts": [
             {
@@ -878,32 +903,29 @@ docker inspect db
 
 * volume 관리 command
 ```
-docker volume ls
+$ docker volume ls
 
-docker volume rm UUID
+$ docker volume rm UUID
 ```
 
 * 웹데이터 readonly 서비스로 컨테이너에 지원하기
+  * /webdata/index.html 작성
 ```
-
-// /webdata/index.html 작성
-mkdir /webdata
+$ mkdir /webdata
 cd /webdata
-echo "<h1>I'm now learning docker with Youtube</h1>" > index.html
 
-docker run -d --name web -v /webdata:/usr/share/nginx/html:ro -p 80:80 -d nginx:latest
-
-docker ps
+$ echo "<h1>I'm now learning docker with Youtube</h1>" > index.html
+$ docker run -d --name web -v /webdata:/usr/share/nginx/html:ro -p 80:80 -d nginx:latest
+$ docker ps
 
 // host의 web browser로 guest OS 접근시 확인 가능
 // index.html 파일 수정 후 host의 browser로 재확인
 ```
 
 * 컨테이너간 데이터 공유하기
+  * 컨테이너 이미지 하나 생성
+  * df.sh 내용
 ```
-// 컨테이너 이미지 하나 생성
-
-// df.sh 내용
 #!/bin/bash
 mkdir -p /webdata
 while true
@@ -911,19 +933,22 @@ do
   df -h > /webdata/index.html
   sleep 10
 done
-
-// dockerfile
+```
+* dockerfile
+```
 FROM ubuntu:18.04
 ADD df.sh /bin/df.sh
 RUN chmod +x /bin/df.sh
 ENTRYPOINT ["/bin/df.sh"]
+```
 
+```
 // 이미지 생성 및 업로드
-docker build -t flatsixna/df:latest .
+$ docker build -t flatsixna/df:latest .
 
 // df를 주기적으로 실행하는 컨테이너 실행
-docker run -d --name df -v /webdata:/webdata flatsixna/df:latest
-docker run -d --name web -v /webdata:/usr/share/nginx/html:ro -p 80:80 -d nginx:latest
+$ docker run -d --name df -v /webdata:/webdata flatsixna/df:latest
+$ docker run -d --name web -v /webdata:/usr/share/nginx/html:ro -p 80:80 -d nginx:latest
 
 // host의 web browser로 guest OS 접근시 확인 가능
 ```
@@ -950,8 +975,8 @@ docker run -d --name web -v /webdata:/usr/share/nginx/html:ro -p 80:80 -d nginx:
     * -p containerPort : host의 random port:containerPort 맵핑을 의미함
     * -P : 대문자 P, host의 random port:dockerfile-expose에 정의된 containerPort 맵핑을 의미함
 ```
-docker run --name web -d -p 80:80 nginx:1.14
-iptables -t nat -L -n -v
+$ docker run --name web -d -p 80:80 nginx:1.14
+$ iptables -t nat -L -n -v
 ```
 
 > 컨테이너 네트워크 추가하기
@@ -962,25 +987,25 @@ iptables -t nat -L -n -v
 // --driver default는 bridge이므로 생략 가능
 // --subnet default는 172.18.x.x 대역
 // --gateway default는 해당 network의 1
-docker network create --driver bridge --subnet 192.168.100.0/24 --gateway 192.168.100.254 mynet
-docker network ls
+$ docker network create --driver bridge --subnet 192.168.100.0/24 --gateway 192.168.100.254 mynet
+$ docker network ls
 
-docker run -d --name web -p 80:80 nginx:1.14
-curl localhost
+$ docker run -d --name web -p 80:80 nginx:1.14
+$ curl localhost
 
-docker run -d --name appjs --net mynet --ip 192.168.100.100 -p 8080:8080 flatsixna/appjs
-curl localhost:8080
+$ docker run -d --name appjs --net mynet --ip 192.168.100.100 -p 8080:8080 flatsixna/appjs
+$ curl localhost:8080
 ```
 
 > 컨테이너간 통신 방법
 * 컨테이너를 이용한 server & client 서비스 운영
 ```
 // mysql server, backend
-docker run -d --name mysql -v /dbdata:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=wordpress -e MYSQL_PASSWORD=wordpress mysql:5.7
+$ docker run -d --name mysql -v /dbdata:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=wordpress -e MYSQL_PASSWORD=wordpress mysql:5.7
 
 // wordpress web server (client of  mysql), frontend
 // --link <컨테이너 이름>:<별칭>
-docker run -d --name wordpress --link mysql:mysql -e WORDPRESS_DB_PASSWORD=wordpress -p 80:80 wordpress:4
+$ docker run -d --name wordpress --link mysql:mysql -e WORDPRESS_DB_PASSWORD=wordpress -p 80:80 wordpress:4
 ```
 
 > 컨테이너간 통신 실습
@@ -988,12 +1013,12 @@ docker run -d --name wordpress --link mysql:mysql -e WORDPRESS_DB_PASSWORD=wordp
 ```
 // brctl은 bridge-utils package 설치 필요
 // docker0 bridge network
-ip addr
-brctl show
+$ ip addr
+$ brctl show
 
 // terminal #1
-docker run --name c1 -it busybox
-docker inspect c1
+$ docker run --name c1 -it busybox
+$ docker inspect c1
 
         "NetworkSettings": {
             "Bridge": "",
@@ -1007,7 +1032,7 @@ docker inspect c1
             "IPAddress": "172.17.0.2",
 
 // NAT 확인
-iptables -t nat -L -v
+$ iptables -t nat -L -v
 
 // 172.17.0.0 -> anywhere로 가는 packet은 host의 IP로 전환하여 masquerade하겠다는 의미
 Chain POSTROUTING (policy ACCEPT 6 packets, 969 bytes)
@@ -1016,14 +1041,14 @@ Chain POSTROUTING (policy ACCEPT 6 packets, 969 bytes)
     0     0 MASQUERADE  tcp  --  any    any     172.17.0.4           172.17.0.4           tcp dpt:http
 
 // terminal #2
-docker run --name c2 -it busybox
-docker inspect c2
+$ docker run --name c2 -it busybox
+$ docker inspect c2
 
 // terminal #3
-docker run -d -p 80:80 --name web1 nginx
+$ docker run -d -p 80:80 --name web1 nginx
 
 // from CentOS
-curl vm-ubuntu-s
+$ curl vm-ubuntu-s
 <!DOCTYPE html>
 <html>
 <head>
@@ -1033,10 +1058,10 @@ curl vm-ubuntu-s
 
 ```
 // port-forwarding
-docker run --name web1 -d -p 80:80 nginx
+$ docker run --name web1 -d -p 80:80 nginx
 
 // 다른 terminal 또는 vm centos, host의 brower에서도 접근 가능
-curl vm-ubuntu-s
+$ curl vm-ubuntu-s
 
 <!DOCTYPE html>
 <html>
@@ -1045,13 +1070,13 @@ curl vm-ubuntu-s
 ...
 
 // host에서 사용하지 않는 port를 random하게 선택하여 맵핑. 할당된 port로 접근 가능
-docker run --name web2 -d -p 80 nginx
+$ docker run --name web2 -d -p 80 nginx
 
 // dockerfile - EXPOSE 80
-docker run --name web -d -P nginx
+$ docker run --name web -d -P nginx
 
 
-docker ps
+$ docker ps
 CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS         PORTS                                     NAMES
 0fc5a32f7639   nginx     "/docker-entrypoint.…"   4 seconds ago    Up 2 seconds   0.0.0.0:49154->80/tcp, :::49154->80/tcp   web
 d59e01ccdbad   nginx     "/docker-entrypoint.…"   4 minutes ago    Up 4 minutes   0.0.0.0:49153->80/tcp, :::49153->80/tcp   web2
@@ -1060,8 +1085,8 @@ abf516d6865b   nginx     "/docker-entrypoint.…"   10 minutes ago   Up 9 minute
 
 * 컨테이너 네트워크 추가하기
 ```
-docker network create --driver bridge --subnet 192.168.100.0/24 --gateway 192.168.100.254 mynet
-docker network ls
+$ docker network create --driver bridge --subnet 192.168.100.0/24 --gateway 192.168.100.254 mynet
+$ docker network ls
 
 NETWORK ID     NAME      DRIVER    SCOPE
 365121fd5be3   bridge    bridge    local
@@ -1069,7 +1094,7 @@ d91bc19c32c7   host      host      local
 dc1b8bf87742   mynet     bridge    local **
 480c09338f73   none      null      local
 
-docker network inspect mynet
+$ docker network inspect mynet
 
         "Name": "mynet",
         "Id": "dc1b8bf877421567d58bb5d97cfcf7bf9acda84bff9c9f9ca1a34ae65f078ed5",
@@ -1081,34 +1106,33 @@ docker network inspect mynet
                 }
 
 // 192.168.100.x 할당됨 또는 static IP
-docker run -it --name c1 --net mynet --ip 192.168.100.100 busybox
+$ docker run -it --name c1 --net mynet --ip 192.168.100.100 busybox
 
-docker run -d --name web -p 80:80 nginx
-curl localhost
+$ docker run -d --name web -p 80:80 nginx
+$ curl localhost
 
 // appjs 구성한 경우 실습
-docker run -d --name appjs --net mynet --ip 192.168.100.100 -p 8080:8080 flatsixna/appjs
-curl localhost:8080
+$ docker run -d --name appjs --net mynet --ip 192.168.100.100 -p 8080:8080 flatsixna/appjs
+$ curl localhost:8080
 ```
 
 * 컨테이너를 이용한 server & client 서비스 운영
 ```
 // mysql server, backend
 // error 발생시, /dbdata/* 삭제 후 다시 실행
-docker run -d --name mysql -v /dbdata:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=wordpress -e MYSQL_PASSWORD=wordpress mysql:5.7
+$ docker run -d --name mysql -v /dbdata:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=wordpress -e MYSQL_PASSWORD=wordpress mysql:5.7
 
 // wordpress web server (client of  mysql), frontend
 // --link <컨테이너 이름>:<별칭>
 // host의 browser에서 호스트 전용 어댑터에 할당된 IP로 wordpress 사이트 접근 가능
-docker run -d --name wordpress --link mysql:mysql -e WORDPRESS_DB_PASSWORD=wordpress -p 80:80 wordpress:4
-
+$ docker run -d --name wordpress --link mysql:mysql -e WORDPRESS_DB_PASSWORD=wordpress -p 80:80 wordpress:4
 ```
 
 * 추가 실습 - container 빌드
   * genid에서 생성한 index.html은 volume을 통해 nginx의 웹 컨텐츠로 공유 되어야 함
   * nginx 80 port를 통해 genid가 생성한 html 파일을 서비스
+  * genid.sh 파일 내용
 ```
-// genid.sh
 #!/bin/bash
 mkdir -p /webdata
 while true
@@ -1116,21 +1140,24 @@ do
   /usr/bin/rig | /usr/bin/boxes -d boy > /webdata/index.html
   sleep 5
 done
-
-// dockerfile
+```
+* dockerfile내용
+```
 FROM ubuntu:18.04
 RUN apt-get update; apt-get -y install rig boxes
 ADD genid.sh /bin/genid.sh
 RUN chmod +x /bin/genid.sh
 ENTRYPOINT ["/bin/genid.sh"]
-
-docker build -t genid .
+```
+* 이미지 생성 및 실행
+```
+$ docker build -t genid .
 
 // host의 /webdata에 파일을 저장
-docker run -d --name genid -v /webdata:/webdata genid:latest
+$ docker run -d --name genid -v /webdata:/webdata genid:latest
 
 // genid에서 저장한 파일을 nginx에서 ro로 접근 가능
-docker run -d --name web -v /webdata:/usr/share/nginx/html:ro -p 80:80 -d nginx:latest
+$ docker run -d --name web -v /webdata:/usr/share/nginx/html:ro -p 80:80 -d nginx:latest
 ```
 
 *****
@@ -1147,7 +1174,7 @@ docker run -d --name web -v /webdata:/usr/share/nginx/html:ro -p 80:80 -d nginx:
 > 도커 컴포즈로 컨테이너 실행하기
 * YAML 문법
   * [참고 : Docker Compose - sample wordpress](https://docs.docker.com/samples/wordpress/)
-
+  * docker-compose.yml 
 ```
 // version : compose 버전, 버전에 따라 지원 문법에 차이가 있음.
 version: "2"
