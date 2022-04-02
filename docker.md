@@ -1174,69 +1174,69 @@ $ docker run -d --name web -v /webdata:/usr/share/nginx/html:ro -p 80:80 -d ngin
 > 도커 컴포즈로 컨테이너 실행하기
 * YAML 문법
   * [참고 : Docker Compose - sample wordpress](https://docs.docker.com/samples/wordpress/)
-  * docker-compose.yml 
+  * docker-compose.yml 예제
 ```
-// version : compose 버전, 버전에 따라 지원 문법에 차이가 있음.
+# version : compose 버전, 버전에 따라 지원 문법에 차이가 있음.
 version: "2"
 
-// services : 컴포즈를 이용해서 실행할 컨테이너 옵션을 정의
+# services : 컴포즈를 이용해서 실행할 컨테이너 옵션을 정의
 service:
   webserver:
     image: nginx
   db:
     image: redis
 
-// build : 컨테이너 빌드
+# build : 컨테이너 빌드
 webapp:
   build: .
 
-// image : compose를 통해 실행할 이미지를 지정
+# image : compose를 통해 실행할 이미지를 지정
 webapp:
   image: centos:7
 
-// command : 컨테이너에서 실행될 명령어 지정
+# command : 컨테이너에서 실행될 명령어 지정
 app:
   image: node:12-alpine
   command: sh -c "yarn install && yarn run dev"
 
-// port : 컨테이너가 공개하는 포트를 나열
+# port : 컨테이너가 공개하는 포트를 나열
 webapp:
   image: httpd:latest
   port:
     - 80
     - 8443:443
 
-// link : 다른 컨테이너와 연계할 때 연계할 컨테이너 지정
+# link : 다른 컨테이너와 연계할 때 연계할 컨테이너 지정
 webserver:
   image: wordpress:latest
   link:
     db:mysql
 
-// expose : port를 link로 연계된 컨테이너에게만 공개할 port. 호스트OS에 포트를 공개하지 않음.
+# expose : port를 link로 연계된 컨테이너에게만 공개할 port. 호스트OS에 포트를 공개하지 않음.
 expose:
   - "8080"
 
-// volumes : 컨테이너에 볼륨 마운트
+# volumes : 컨테이너에 볼륨 마운트
 webapp:
   image: httpd
   volumes:
     - /var/www/html
 
-// environment : 컨테이너에 적요할 환경변수를 정의
+# environment : 컨테이너에 적요할 환경변수를 정의
 database:
   image: mysql:5.7
   environment:
     MYSQL_ROOT_PASSWORD: pass
 
-// restart : 컨테이너가 종료될 때 적용할 restart 정책
-//no: 재시작하지 않음
-//always: 컨테이너를 수동으로 끄기 전까지 항상 재시작
-//on-failure: 오류가 있을 시에 재시작
+# restart : 컨테이너가 종료될 때 적용할 restart 정책
+#no: 재시작하지 않음
+#always: 컨테이너를 수동으로 끄기 전까지 항상 재시작
+#on-failure: 오류가 있을 시에 재시작
 database:
   image: mysql:5.7
   restart: always
 
-// depends_on : 컨테이너 간의 종속성을 정의. 정의한 컨테이너가 먼저 동작되어야 한다.
+# depends_on : 컨테이너 간의 종속성을 정의. 정의한 컨테이너가 먼저 동작되어야 한다.
 services:
   web:
     image: wordpress:latest
@@ -1247,7 +1247,7 @@ services:
 ```
 
 ```
-// sample for wordpress
+# sample for wordpress
 
 version: "3.9"
     
@@ -1305,11 +1305,11 @@ services:
       MYSQL_ROOT_PASSWORD: pass
 
 // 3단계 : docker-compose 명령어
-docker-compose up -d
-docker-compose ps
-docker-compose scale mysql=2
-docker-compose ps
-docker-compose down
+$ docker-compose up -d
+$ docker-compose ps
+$ docker-compose scale mysql=2
+$ docker-compose ps
+$ docker-compose down
 ```
 
 * docker-compose 명령어
@@ -1332,20 +1332,21 @@ rm | 컨테이너 삭제
 down | 리소스 삭제
 
 ```
-docker-compose config
-docker-compose up
-docker-compose up -d
+$ docker-compose config
+$ docker-compose up
+$ docker-compose up -d
+
 // 다른 디렉토리의 yaml 실행
-docker-compose -f /other-dir/docker-compose.yml
+$ docker-compose -f /other-dir/docker-compose.yml
 
-docker-compose ps
-docker-compose scale 서비스이름=개수
-docker-compose run 서비스이름 실행 명령어
-docker-compose logs 서비스이름
+$ docker-compose ps
+$ docker-compose scale 서비스이름=개수
+$ docker-compose run 서비스이름 실행 명령어
+$ docker-compose logs 서비스이름
 
-docker-compose stop
-docker-compose start
-docker-compose down
+$ docker-compose stop
+$ docker-compose start
+$ docker-compose down
 ```
 
 > 빌드에서 운영까지
@@ -1358,11 +1359,11 @@ docker-compose down
 * docker-compose 설치하기
   * [참고 : Install Docker Compose](https://docs.docker.com/compose/install/)
 ```
-sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+$ sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+$ sudo chmod +x /usr/local/bin/docker-compose
 
 // after logout and login...
-docker-compose --version
+$ docker-compose --version
 ```
 
 * 컨테이너 빌드에서 운영까지
@@ -1371,10 +1372,13 @@ docker-compose --version
 
 ```
 // 1단계 : 서비스 디렉토리 생성, 필요한 파일 생성
- mkdir composetest
- cd composetest
+$ mkdir composetest
+$ cd composetest
+```
 
-// app.py
+```
+// app.py 파일 내용
+
 import time
 
 import redis
@@ -1398,13 +1402,18 @@ def get_hit_count():
 def hello():
     count = get_hit_count()
     return 'Hello World! I have been seen {} times.\n'.format(count)
+```
 
-// requirements.txt
+```
+// requirements.txt 파일 내용
+
 flask
 redis
+```
 
-
+```
 // 2단계 : 빌드를 위한 dockerfile 생성
+
 # syntax=docker/dockerfile:1
 FROM python:3.7-alpine
 WORKDIR /code
@@ -1418,8 +1427,9 @@ RUN pip install -r requirements.txt
 EXPOSE 5000
 COPY . .
 CMD ["flask", "run"]
+```
 
-
+```
 // 3단계 : docker-compose.yml 생성
 version: "3.9"
 services:
@@ -1429,28 +1439,31 @@ services:
       - "8000:5000"
   redis:
     image: "redis:alpine"
+```
 
-
+```
 // 4단계 : docker-compose 명령어
-docker-compose up -d
+$ docker-compose up -d
 ```
    
 ```
 // docker-compose 추가 확인
-docker-compose ps
-docker-compose logs
+$ docker-compose ps
+$ docker-compose logs
 
 // docker-compose port
-docker-compose port web 5000
+$ docker-compose port web 5000
 0.0.0.0:8000
 
-docker-compose config
+$ docker-compose config
 ```
 
 ```
 // 중단 및 리소스 제거
-docker-compose down
+$ docker-compose down
+```
 
+```
 // 5단계 : docker-compose.yml - bind mount 추가. 현재 디렉토리를 /code로 mount했기 때문에 app.py 파일을 수정하면 바로 적용됨.
 version: "3.9"
 services:
@@ -1469,14 +1482,14 @@ services:
 'Hello Docker!!! I have been seen {} times.\n'.format(count)
 
 // 서비스 개수 scale out
-docker-compose scale redis=3
+$ docker-compose scale redis=3
 WARNING: The scale command is deprecated. Use the up command with the --scale flag instead.
 
 Creating composetest_redis_2 ... done
 Creating composetest_redis_3 ... done
 
 // 서비스 개수 scale in
-docker-compose scale redis=3
+$ docker-compose scale redis=3
 
 WARNING: The scale command is deprecated. Use the up command with the --scale flag instead.
 Stopping and removing composetest_redis_2 ... done
@@ -1484,22 +1497,22 @@ Stopping and removing composetest_redis_3 ... done
 
 // WARNING: The scale command is deprecated. Use the up command with the --scale flag instead.
 // 아래 command로 변경하여 사용
-docker-compose up -d --scale redis=3
-docker-compose up -d --scale redis=1
+$ docker-compose up -d --scale redis=3
+$ docker-compose up -d --scale redis=1
 ```
    
 ```
 // docker exec와 유사한 command. web 이라는 서비스에 env를 전달.
-docker-compose run web env
+$ docker-compose run web env
 
 // 서비스 중인 web의 log를 보고자 할때
-docker-compose logs web
+$ docker-compose logs web
 
 // 서비스 중지 only
-docker-compose stop
+$ docker-compose stop
 
 // 완전히 종료, network, volume까지 제거
-docker-compose down --volumes
+$ docker-compose down --volumes
 ```
 
 * mysql database를 사용하는 wordpress 운영하기
@@ -1507,10 +1520,11 @@ docker-compose down --volumes
 
 ```
 // 디렉토리 생성 및 필요한 파일 생성
-mkdir my_wordpress
-cd my_wordpress
+$ mkdir my_wordpress
+$ cd my_wordpress
+```
 
-
+```
 // docker-compose.yml
 version: "3.9"
     
@@ -1543,10 +1557,11 @@ services:
 volumes:
   db_data: {}
   wordpress_data: {}
+```
 
-
+```
 // docker-compose 실행
-docker-compose up -d
+$ docker-compose up -d
 
 
 // host에 실제 저장되는 경로
@@ -1559,10 +1574,10 @@ docker-compose up -d
 
 // shutdown and cleanup
 // removes the containers and default network, but preserves your WordPress database
-docker-compose down
+$ docker-compose down
 
 // removes the containers, default network, and the WordPress database.
-docker-compose down --volumes
+$ docker-compose down --volumes
 ```
 
 *****
