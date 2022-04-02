@@ -811,7 +811,7 @@ CONTAINER ID   NAME      CPU %     MEM USAGE / LIMIT   MEM %     NET I/O     BLO
     * [참고 : 도커 컨테이너 까보기(2) – Container Size, UFS](http://cloudrain21.com/examination-of-docker-containersize-ufs)
   * base가되는 image의 특정 파일 변경이 필요한 경우, COW 기법을 이용하여 변경이 필요한 파일의 복사본이 생성되고 이 파일이 수정됨.
     * COW (Copy-on-write)는 유닉스/리눅스에서 fork()할 때 사용하는 기법
-    * [참고 : linux system programming - fork()](https://github.com/gotoplace/linux_system_programming/tree/main/chapter_5#%EC%83%88%EB%A1%9C%EC%9A%B4-%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EC%8B%A4%ED%96%89%ED%95%98%EA%B8%B0)
+    * [참고 : linux system programming - fork()](https://github.com/gotoplace/linux_system_programming/tree/main/chapter_05#%EC%83%88%EB%A1%9C%EC%9A%B4-%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EC%8B%A4%ED%96%89%ED%95%98%EA%B8%B0)
     * [참고 : The Copy-on-Write Mechanism](https://www.cloudbees.com/blog/docker-storage-introduction)
   * docker rm으로 삭제하면 rw 레이어에 저장된 data도 같이 삭제되어 복원할 수 없음
 
