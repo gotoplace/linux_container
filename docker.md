@@ -385,6 +385,16 @@ $ docker inspect [option] <imagename:tag>
 ```
 $ docker rmi [option] <imagename:tag>
 ```
+
+* [참고 : 사용하지 않는 이미지만 삭제하는 방법](https://www.lainyzine.com/ko/article/docker-rmi-removing-docker-images/)
+```
+// 현재 로컬 시스템의 모든 이미지를 삭제
+$ docker image prune
+
+// -a 옵션을 사용하면, dangling된 이미지와 함께 컨테이너에서 사용중이지 않은 모든 이미지를 삭제
+$ docker image prune -a
+```
+
 *****
 
 컨테이너 실행 / 종료
